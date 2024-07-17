@@ -1,0 +1,58 @@
+[general]
+    name = "Test map"
+
+# How do we handle repeating sections like boss sections?
+# we'll need sections.
+
+[[section0]]
+    name = "Boss Zone"
+    title = "ENTER THE TANKERATOR"
+    titleImage = "titles/tankerator.png"
+    isRepeating = true
+    isBossZone = true
+    width = 300
+    height = 600
+    connectsTo = "section1"
+    activatesAchievement = 13
+
+[[section0.layers]]
+    name = "ground"
+    data = [0]
+
+[[section0.layers]]
+    name = "walls"
+    data = [0]
+
+[[section0.layers]] # for stuff you can shoot through
+    name = "destructableWalls"
+    data = [0]
+
+[[section0.layers]]
+    name = "clouds"
+    width = 32
+    height = 32
+    zoom = 1.0
+    scrollRateX = 0.0
+    scrollRateY = 0.0
+    data = [0]
+
+[[section1]]
+    name = "Cavern"
+    isRepeating = false
+    isBossZone = false
+    width = 300
+    height = 600
+
+[[section1.layers]]
+    name = "ground"
+
+[[section1.layers]]
+    name = "walls"
+
+[[section1.layers]]
+    name = "clouds"
+    width = 32
+    height = 32
+    zoom = 1.0
+    scrollRateX = 0.0
+    scrollRateY = 0.0

@@ -1,0 +1,27 @@
+[general]
+name = "Test map entities"
+numberEntities = 3
+
+[entity0]
+    name = "bosstankerator"
+    pos = [2, 3]
+    section = 0
+    activatedWhenNearScreen = true
+    activationDistance = 300
+    followPath = -1
+
+[entity1]
+    name = "cyberdog"
+    pos = [300, 3]
+    section = 0
+    activatedWhenNearScreen = true
+    activationDistance = 300
+    followPath = 0
+
+[entity2]
+    name = "skiininja"
+    pos = [600, 3]
+    section = 0
+    activatedWhenNearScreen = true
+    activationDistance = 300
+    followPath = 1
