@@ -8,77 +8,171 @@
  +/
 import std.stdio;
 import toml;
+//import molto;
 
-struct Viewport {
+struct Viewport
+{
 	float x, y, w, h, ox, oy;
 }
 
-class BaseObject {
+class BaseObject
+{
 	pair pos, vel;
 }
 
-struct pair {
+struct pair
+{
 	float x, y;
 }
 
-struct rect {
+struct rect
+{
 	float x, y, w, h;
 }
 
-struct bitmap {
+struct bitmap
+{
 }
 
-class AICom {
+class AICom
+{
 }
 
-class PhysicsCom {
+class PhysicsCom
+{
+	pair pos;
+	pair vel;
 }
 
-class GraphicsCom {
+class GraphicsCom
+{
 }
 
-class Unit {
+class Unit
+{
 	PhysicsCom phy;
 	GraphicsCom gfx;
 
-	void onTick() {
+	void onTick()
+	{
 	}
 
-	void onDraw(Viewport v) {
+	void onDraw(Viewport v)
+	{
 	}
 }
 
-class PlayerUnit : Unit {
+class PlayerUnit : Unit
+{
 	//weaponsList
 	//upgradesList
 }
 
-class EnemyUnit : Unit {
+class EnemyUnit : Unit
+{
 	AICom ai;
 }
 
-struct physicalParticle {
+struct physicalParticleType
+{
+	float damage;
+	float speed;
+	bitmap* bmp;
+	bool isTracking;
+	float rotationSpeed; /// for tracking
+}
+
+enum PHY_PARTICLE
+{
+	pistolBullet = 0,
+	rifleBullet = 1,
+}
+
+float atan2(pair vector)
+{
+	import std.math : atan2;
+
+	return atan2(vector.y, vector.x);
+}
+
+float angleTo(pair A, pair B)
+{
+	import std.math : atan2;
+
+	return atan2(B.y - A.y, B.x - A.y);
+}
+
+struct physicalParticle
+{ /// Bullets, rockets, etc
+	pair pos, vel;
+	bitmap* bmp;
+
+	physicalParticleType myType;
+	//	int type; or type number?
+	Unit myTarget; /// if tracking, what unit are we tracking
+
+	void handleTracking()
+	{
+		if (myType.isTracking)
+		{
+			if (myTarget !is null)
+			{
+				import std.math;
+
+				float angle = atan2(vel);
+				float mag = sqrt(vel.x ^^ 2 + vel.y ^^ 2);
+				float angle2 = angleTo(pos, myTarget.phy.pos);
+				if (angle < angle2)
+				{
+					angle += myType.rotationSpeed;
+				}
+				if (angle > angle2)
+				{
+					angle -= myType.rotationSpeed;
+				}
+			}
+			else
+			{
+				// just keep moving forward till we time out.
+			}
+		}
+
+		void onTick()
+		{
+			handleTracking();
+			pos.x += vel.x;
+			pos.y += vel.y;
+		}
+	}
+
+	bool onDraw(Viewport v)
+	{
+		return false;
+	}
+}
+
+struct particle
+{
 	pair pos, vel;
 	bitmap* bmp;
 }
 
-struct particle {
-	pair pos, vel;
-	bitmap* bmp;
-}
-
-class PlayerStats {
+class PlayerStats
+{
 	int money;
 }
 
-class World {
+class World
+{
 	Unit[] units;
 
-	this() {
+	this()
+	{
 		loadStage();
 	}
 
-	void parseMap(string mapPath) {
+	void parseMap(string mapPath)
+	{
 		import std.file, std.conv;
 
 		auto data = parseTOML(cast(string) read(mapPath));
@@ -87,7 +181,8 @@ class World {
 		writeln(name);
 	}
 
-	void parseMapEntities(string entityPath) {
+	void parseMapEntities(string entityPath)
+	{
 		import std.file, std.conv;
 
 		auto data = parseTOML(cast(string) read(entityPath));
@@ -96,7 +191,8 @@ class World {
 		writeln(name);
 	}
 
-	final void loadStage(string mapPath = "map.toml", string entityPath = "mapentities.toml") {
+	final void loadStage(string mapPath = "map.toml", string entityPath = "mapentities.toml")
+	{
 		parseMap(mapPath);
 		parseMapEntities(entityPath);
 	}
@@ -113,15 +209,18 @@ class World {
 		}
 		writefln("%s %s", name, numberScreens);+/
 
-	void onTick() {
+	void onTick()
+	{
 	}
 
-	void onDraw(Viewport V) {
+	void onDraw(Viewport V)
+	{
 	}
 }
 
-void main(string[] args) {
-	PlayerStats[] playerStats; 
+void main(string[] args)
+{
+	PlayerStats[] playerStats;
 	World world = new World(); // putting these here prevents any direct access except through passed references.
 	Viewport[] viewports;
 	viewports ~= Viewport(0, 0, 320, 240, 0, 0);
